@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SecurityService
@@ -16,8 +18,35 @@ namespace SecurityService
 		/// </summary>
 		public void AddUser(string username, string password)
 		{
-			throw new NotImplementedException();
-		}
+			if (!UserAccountsDB.ContainsKey(username))
+			{
+				UserAccountsDB.Add(username,new User(username,password));
+			}
+			else
+			{
+                Console.WriteLine($"Korisnik sa korisnickim imenom {username} vec postoji u bazi");
+            }
 
-	}
+			IIdentity identity = Thread.CurrentPrincipal.Identity;
+
+            Console.WriteLine("Tip autentifikacije : " + identity.AuthenticationType);
+
+			WindowsIdentity windowsIdentity = identity as WindowsIdentity;
+
+            Console.WriteLine("Ime klijenta koji je pozvao metodu : " + windowsIdentity.Name);
+            Console.WriteLine("Jedinstveni identifikator : " + windowsIdentity.User);
+
+            Console.WriteLine("Grupe korisnika:");
+			foreach (IdentityReference group in windowsIdentity.Groups)
+			{
+				SecurityIdentifier sid = (SecurityIdentifier)group.Translate(typeof(SecurityIdentifier));
+				string name = (sid.Translate(typeof(NTAccount))).ToString();
+				Console.WriteLine(name);
+			}
+
+
+
+        }
+
+    }
 }

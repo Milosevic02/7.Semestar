@@ -23,8 +23,9 @@ namespace Client
 
             using (ClientProxy proxy = new ClientProxy(binding, address))
 			{
-
-			}
+                proxy.AddUser("pera", "peric");
+                proxy.AddUser("pera", "peric");
+            }
 
 			Console.ReadLine();
 		}
