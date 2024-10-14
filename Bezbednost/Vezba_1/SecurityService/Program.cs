@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
@@ -19,6 +20,15 @@ namespace SecurityService
             binding.Security.Mode = SecurityMode.Transport;
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
             binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
+
+			ServiceHost host = new ServiceHost(typeof(SecurityService));
+			host.AddServiceEndpoint(typeof(ISecurityService), binding,address);
+
+			host.Open();
+
+			Console.WriteLine("Korisnik koji je pokrenuo server je : " + WindowsIdentity.GetCurrent().Name);
+
+
 
             Console.ReadLine();
 			
