@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IdentityModel.Selectors;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 
 namespace Manager
 {
@@ -17,7 +18,13 @@ namespace Manager
 		/// <param name="certificate"> certificate to be validate </param>
 		public override void Validate(X509Certificate2 certificate)
 		{
-			throw new NotImplementedException();
+			X509Certificate2 srvCert = CertManager.GetCertificateFromStorage(StoreName.My,StoreLocation.LocalMachine,Formatter.ParseName(WindowsIdentity.GetCurrent().Name));
+
+			if (!certificate.Issuer.Equals(srvCert.Issuer))
+			{
+				throw new Exception("Certificate is not from the valid issuer");
+			}
+
 		}
 	}
 }
