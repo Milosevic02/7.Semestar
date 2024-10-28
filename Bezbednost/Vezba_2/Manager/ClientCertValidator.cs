@@ -17,7 +17,10 @@ namespace Manager
 		/// <param name="certificate"> certificate to be validate </param>
 		public override void Validate(X509Certificate2 certificate)
 		{
-			throw new NotImplementedException();
+			if (certificate.Subject.Equals(certificate.Issuer))
+			{
+				throw new Exception("Certificate is self-issued");
+			}
 		}
 	}
 }
